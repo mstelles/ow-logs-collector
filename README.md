@@ -7,7 +7,7 @@
 curl -O https://raw.githubusercontent.com/mstelles/ow-logs-collector/master/ow-logs-collector.sh
 sudo sh ow-logs-collector.sh
 ```
-* After the execution, a file named "ow-logs-collector-<instance ID>.tar.bz2" will be created at the /opt/ow-logs-collector/ directory.
+* After the execution, a file named "ow-logs-collector-\<instance ID\>.tar.bz2" will be created at the /opt/ow-logs-collector/ directory.
 
 * Download the file with any SCP tool you like.
 
