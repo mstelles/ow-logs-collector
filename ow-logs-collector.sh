@@ -36,6 +36,33 @@ mkdir -p $PROGRAM_DIR || echo "Cant create $PROGRAM_DIR"
 sysctl -a > $COLLECT_DIR/sysctl.txt 2>&1
 getenforce > $COLLECT_DIR/getenforce.txt 2>&1
 
+#iptables
+iptables_info=(
+  security
+  filter
+  mangle
+  raw
+  nat
+)
+
+for iptables_table in "${iptables_info[@]}"; do
+  iptables -v -n -x -L -t $iptables_table > $COLLECT_DIR/iptables-$iptables_table.txt 2> $COLLECT_DIR/iptables-$iptables_table-err.txt
+done
+
+#misc info
+misc_array=(
+  ami-id
+  security-groups
+  events/maintenance/history
+  iam/info
+)
+
+for misc_info in "${misc_array[@]}"; do
+  echo "Collecting meta-data: $misc_info" >> /tmp/${PROGRAM_NAME}/misc_info.txt
+  curl -s http://169.254.169.254/latest/meta-data/$misc_info >> /tmp/${PROGRAM_NAME}/misc_info.txt
+  echo >> /tmp/${PROGRAM_NAME}/misc_info.txt
+done
+
 file_array=(
   /var/log/messages
   /var/log/cloud-init.log
@@ -60,6 +87,8 @@ for collect_dirs in "${dir_array[@]}"; do
   dir_file_name=$(echo $collect_dirs | tr \/ \_ | cut -c 2-).tar.bz2
   tar cjf $COLLECT_DIR/$dir_file_name $collect_dirs
 done
+
+mkdir $PROGRAM_DIR/ow-logs-collector-$INSTANCE_ID || echo "Can't create $PROGRAM_DIR/ow-logs-collector-$INSTANCE_ID"
 
 mv $COLLECT_DIR/* $PROGRAM_DIR/ow-logs-collector-$INSTANCE_ID
 echo "Generating the final file: $PROGRAM_DIR/ow-logs-collector-$INSTANCE_ID.tar.bz2"
