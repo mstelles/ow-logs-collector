@@ -33,7 +33,9 @@ SSHUSER=$(who am i| awk '{print$1}')
 mkdir -p $COLLECT_DIR || echo "Cant create $COLLECT_DIR"
 mkdir -p $PROGRAM_DIR || echo "Cant create $PROGRAM_DIR"
 
+ps aufwx > $COLLECT_DIR/ps.txt 2>&1
 sysctl -a > $COLLECT_DIR/sysctl.txt 2>&1
+netstat -nat > $COLLECT_DIR/netstat.txt 2>&1
 getenforce > $COLLECT_DIR/getenforce.txt 2>&1
 
 #iptables
